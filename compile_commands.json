@@ -1,0 +1,53 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/logic/gate.o",
+      "src/logic/gate.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/logic/gate.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/logic/gate.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/world/world.o",
+      "src/world/world.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/world/world.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/world/world.o"
+  }
+]
