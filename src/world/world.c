@@ -33,7 +33,8 @@ void UpdateWorld(World *world) {
 void DrawWorld(World* world) {
     BeginTextureMode(world->viewport);
         ClearBackground(GRAY);
-        DrawRectangleLinesEx((Rectangle){ 0.0f, 0.0f, world->width, world->height }, 5.0f, DARKGRAY);
+        
+        DrawRectangleLinesEx((Rectangle){ 0.0f, 0.0f, world->width, world->height }, 10.0f, DARKGRAY);
         
         for (int i = 0; i < world->gatesSize; i++) DrawGate(&world->gates[i]);
     EndTextureMode();

@@ -9,23 +9,6 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/main.o",
-      "src/main.c"
-    ],
-    "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-g",
-      "-Wall",
-      "-Werror",
-      "-Isrc",
-      "-DDEBUG=1",
-      "-c",
-      "-o",
       "build/logic/gate.o",
       "src/logic/gate.c"
     ],
@@ -43,11 +26,62 @@
       "-DDEBUG=1",
       "-c",
       "-o",
+      "build/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
       "build/world/world.o",
       "src/world/world.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
     "file": "/home/plunyo/Coding/circuit-creator-4/src/world/world.c",
     "output": "/home/plunyo/Coding/circuit-creator-4/build/world/world.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/editor/connections.o",
+      "src/editor/connections.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/connections.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/connections.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/editor/editor.o",
+      "src/editor/editor.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/editor.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/editor.o"
   }
 ]

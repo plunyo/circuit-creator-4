@@ -7,4 +7,4 @@
 #define GATE_PORT_COLOR   (Color){ 53, 56, 57, 255 }
 #define GATE_FONT_SIZE    30
 
-#define WORLD_HEIGHT_MULTIPLIER 0.925
+#define WORLD_HEIGHT_MULTIPLIER 0.9

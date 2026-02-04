@@ -15,7 +15,7 @@ typedef struct Gate {
     Vector2 position;
     
     bool inputs[2]; // gates will only have 2 outputs at one time
-    bool output;
+    bool output[1]; // all gates only have ONE output
 } Gate;
 
 Gate CreateGate(GateType type, Vector2 pos);

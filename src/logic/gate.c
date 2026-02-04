@@ -37,24 +37,24 @@ Gate CreateGate(GateType type, Vector2 pos) {
 void UpdateGate(Gate* gate) {
     switch (gate->type) {
         case AND_GATE:
-            gate->output = gate->inputs[0] && gate->inputs[1];
+            gate->output[0] = gate->inputs[0] && gate->inputs[1];
             break;
 
         case OR_GATE:
-            gate->output = gate->inputs[0] || gate->inputs[1];
+            gate->output[0] = gate->inputs[0] || gate->inputs[1];
             break;
 
         case XOR_GATE:
-            gate->output = gate->inputs[0] != gate->inputs[1];
+            gate->output[0] = gate->inputs[0] != gate->inputs[1];
             break;
 
         case NOT_GATE:
-            gate->output = !gate->inputs[0]; // only first input matters
+            gate->output[0] = !gate->inputs[0]; // only first input matters
             break;
     }
 }
 
-
+ 
 void DrawGate(Gate *gate) {
     const float x = gate->position.x;
     const float y = gate->position.y;
@@ -72,7 +72,8 @@ void DrawGate(Gate *gate) {
     if (gate->type != NOT_GATE) {
         DrawCircleV((Vector2){ x, y + quarterHeight }, GATE_PORT_RADIUS, GATE_PORT_COLOR);
         DrawCircleV((Vector2){ x, y + GATE_HEIGHT - quarterHeight}, GATE_PORT_RADIUS, GATE_PORT_COLOR);
-    } else { // because not gates have only one output
+    } else {
+        // because not gates have only one output
         DrawCircleV((Vector2){ x, y + halfHeight }, GATE_PORT_RADIUS, GATE_PORT_COLOR);
     }
 
