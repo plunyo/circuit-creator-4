@@ -1,11 +1,11 @@
 #pragma once
 
-#include "editor/connections.h"
+#include "editor/connector.h"
 #include "world/world.h"
 
 typedef struct Editor {
     World world;
-    ConnectionManager* connManager;
+    Connector* connManager;
 } Editor;
 
 Editor CreateEditor();

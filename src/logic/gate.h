@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include "port.h"
 
 typedef enum GateType {
     NOT_GATE,
@@ -14,10 +15,11 @@ typedef struct Gate {
 
     Vector2 position;
     
-    bool inputs[2]; // gates will only have 2 outputs at one time
-    bool output[1]; // all gates only have ONE output
+    Port inputs[2];
+    Port output;
 } Gate;
 
 Gate CreateGate(GateType type, Vector2 pos);
 void UpdateGate(Gate* gate);
+void MoveGate(Gate* gate, Vector2 newPos);
 void DrawGate(Gate* gate);

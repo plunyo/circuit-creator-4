@@ -1,4 +1,5 @@
 #include "editor/editor.h"
+#include "editor/connector.h"
 #include "settings.h"
 #include "world/world.h"
 #include <raylib.h>
@@ -7,6 +8,7 @@ Editor CreateEditor() {
     Editor editor = { 0 };
 
     editor.world = CreateWorld();
+    editor.connManager = MemAlloc(sizeof(Connector));
 
     return editor;
 }

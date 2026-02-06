@@ -29,7 +29,9 @@ Gate CreateGate(GateType type, Vector2 pos) {
     Gate gate = { 0 };
 
     gate.type = type;
-    gate.position = pos;
+    gate.output = (Port){ 0 };
+    
+    MoveGate(&gate, pos);   
 
     return gate;
 }
@@ -37,48 +39,58 @@ Gate CreateGate(GateType type, Vector2 pos) {
 void UpdateGate(Gate* gate) {
     switch (gate->type) {
         case AND_GATE:
-            gate->output[0] = gate->inputs[0] && gate->inputs[1];
+            gate->output.value= gate->inputs[0].value && gate->inputs[1].value;
             break;
 
         case OR_GATE:
-            gate->output[0] = gate->inputs[0] || gate->inputs[1];
+            gate->output.value = gate->inputs[0].value || gate->inputs[1].value;
             break;
 
         case XOR_GATE:
-            gate->output[0] = gate->inputs[0] != gate->inputs[1];
+            gate->output.value = gate->inputs[0].value != gate->inputs[1].value;
             break;
 
         case NOT_GATE:
-            gate->output[0] = !gate->inputs[0]; // only first input matters
+            gate->output.value = !gate->inputs[0].value; // only first input matters
             break;
     }
 }
 
+void MoveGate(Gate* gate, Vector2 newPos) {
+    static const float halfHeight = GATE_HEIGHT * 0.5f;
+    static const float quarterHeight = GATE_HEIGHT * 0.25f;
+
+    gate->position = newPos;
+
+    if (gate->type != NOT_GATE) {
+        gate->inputs[0].position = (Vector2){ newPos.x, newPos.y + quarterHeight };
+        gate->inputs[1].position = (Vector2){ newPos.x, newPos.y + halfHeight + quarterHeight };
+    } else {
+        gate->inputs[0].position = (Vector2){ newPos.x, newPos.y + halfHeight };
+    }
+
+    gate->output.position = (Vector2){newPos.x + GATE_WIDTH, newPos.y + halfHeight };
+}
  
 void DrawGate(Gate *gate) {
     const float x = gate->position.x;
     const float y = gate->position.y;
-    const float halfHeight = GATE_HEIGHT * 0.5f;
-    const float quarterHeight = GATE_HEIGHT * 0.25f;
 
     const Rectangle gateRect = { x, y, GATE_WIDTH, GATE_HEIGHT };
 
-    
     // main body
     DrawRectanglePro(gateRect, (Vector2){0, 0}, 0.0f, getColorFromGate(gate->type));
     DrawRectangleLinesEx(gateRect, 5.0f, ColorAlpha(getColorFromGate(gate->type), 0.4f));
 
     // input ports
+    DrawCircleV(gate->inputs[0].position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+    
     if (gate->type != NOT_GATE) {
-        DrawCircleV((Vector2){ x, y + quarterHeight }, GATE_PORT_RADIUS, GATE_PORT_COLOR);
-        DrawCircleV((Vector2){ x, y + GATE_HEIGHT - quarterHeight}, GATE_PORT_RADIUS, GATE_PORT_COLOR);
-    } else {
-        // because not gates have only one output
-        DrawCircleV((Vector2){ x, y + halfHeight }, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+        DrawCircleV(gate->inputs[1].position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
     }
 
     // output port
-    DrawCircleV((Vector2){ x + GATE_WIDTH, y + halfHeight }, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+    DrawCircleV(gate->output.position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
 
     // text
     const char* text = getNameFromGate(gate->type);

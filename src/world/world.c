@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include "logic/gate.h"
+#include <math.h>
 #include "settings.h"
 
 World CreateWorld() {
@@ -35,6 +36,17 @@ void DrawWorld(World* world) {
         ClearBackground(GRAY);
         
         DrawRectangleLinesEx((Rectangle){ 0.0f, 0.0f, world->width, world->height }, 10.0f, DARKGRAY);
+        
+        
+        Vector2 p1 = world->gates[0].output.position;
+        Vector2 p4 = world->gates[1].inputs[0].position;            float dx = fabsf(p4.x - p1.x);
+        
+        
+        float bend = fmaxf(dx * 0.5f, 100.0f);
+        Vector2 c3 = (Vector2){ p4.x - bend, p4.y };
+        Vector2 c2 = (Vector2){ p1.x + bend, p1.y };
+
+        DrawSplineSegmentBezierCubic(p1, c2, c3, p4, GATE_PORT_RADIUS * 0.8f, DARKGRAY);
         
         for (int i = 0; i < world->gatesSize; i++) DrawGate(&world->gates[i]);
     EndTextureMode();
