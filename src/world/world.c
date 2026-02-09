@@ -1,8 +1,9 @@
 #include "world/world.h"
 #include <raylib.h>
 #include <stdlib.h>
-#include "logic/gate.h"
 #include <math.h>
+#include "logic/gate.h"
+#include "quadtree/quadtree.h"
 #include "settings.h"
 
 World CreateWorld() {
@@ -11,6 +12,8 @@ World CreateWorld() {
     world.width = GetScreenWidth();
     world.height = GetScreenHeight() * WORLD_HEIGHT_MULTIPLIER;
     world.viewport = LoadRenderTexture(world.width, world.height);
+
+    world.quadtree = CreateQuadTree((Rectangle){ 0.0f, 0.0f, world.width, world.height });
 
     world.gatesCapacity = 10;
     world.gatesSize = 0;
@@ -28,7 +31,10 @@ void UpdateWorld(World *world) {
         world->width = GetScreenWidth();
         world->height = GetScreenHeight() * WORLD_HEIGHT_MULTIPLIER;
         world->viewport = LoadRenderTexture(world->width, world->height);
+        world->quadtree = CreateQuadTree((Rectangle){ 0.0f, 0.0f, world->width, world->height });
     }
+
+    
 }
 
 void DrawWorld(World* world) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "logic/chip.h"
+#include "quadtree/quadtree.h"
 #include <stddef.h>
 #include <raylib.h>
 
@@ -8,6 +9,8 @@ typedef struct World {
     RenderTexture viewport;
     int width;
     int height;
+
+    QuadTree quadtree;
 
     Chip* chips;
     size_t chipsSize;

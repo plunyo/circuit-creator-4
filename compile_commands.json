@@ -60,12 +60,12 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/editor/connections.o",
-      "src/editor/connections.c"
+      "build/editor/editor.o",
+      "src/editor/editor.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/connections.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/connections.o"
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/editor.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/editor.o"
   },
   {
     "arguments": [
@@ -77,11 +77,28 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/editor/editor.o",
-      "src/editor/editor.c"
+      "build/editor/conn_mgr.o",
+      "src/editor/conn_mgr.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/editor.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/editor.o"
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/conn_mgr.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/conn_mgr.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/quadtree/quadtree.o",
+      "src/quadtree/quadtree.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/quadtree/quadtree.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/quadtree/quadtree.o"
   }
 ]
