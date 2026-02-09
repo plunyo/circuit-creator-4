@@ -1,4 +1,5 @@
 #pragma once
+
 #include <raylib.h>
 
 #define QUADTREE_CAPACITY 5
@@ -11,7 +12,8 @@ typedef enum QTEntityType {
 
 typedef struct QTEntity {
     QuadTreeEntityType type;
-    void* entity; // pointer to whatever object this represents
+    Rectangle rect;
+    int       index;
 } QTEntity;
 
 typedef struct QuadTree {
@@ -26,11 +28,9 @@ typedef struct QuadTree {
     int count;                          // current number of entities
 } QuadTree;
 
-// create a new quadtree with a given boundary
-QuadTree CreateQuadTree(Rectangle boundary);
-
-// insert an entity into a quadtree
-int InsertQuadTree(QuadTree* qt, QTEntity* entity, Rectangle entityBounds);
-
-// query entities inside a given range
+QuadTree* CreateQuadTree(Rectangle boundary);
+int InsertQuadTree(QuadTree* qt, QTEntity* entity);
 void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount);
+void ExpandQuadTreeRoot(QuadTree** root, Rectangle rectOutside);
+void DrawQuadTree(QuadTree* qt);
+void DestroyQuadTree(QuadTree* qt);

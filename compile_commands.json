@@ -26,46 +26,12 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/main.o",
-      "src/main.c"
-    ],
-    "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-g",
-      "-Wall",
-      "-Werror",
-      "-Isrc",
-      "-DDEBUG=1",
-      "-c",
-      "-o",
       "build/world/world.o",
       "src/world/world.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
     "file": "/home/plunyo/Coding/circuit-creator-4/src/world/world.c",
     "output": "/home/plunyo/Coding/circuit-creator-4/build/world/world.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-g",
-      "-Wall",
-      "-Werror",
-      "-Isrc",
-      "-DDEBUG=1",
-      "-c",
-      "-o",
-      "build/editor/editor.o",
-      "src/editor/editor.c"
-    ],
-    "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/editor.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/editor.o"
   },
   {
     "arguments": [
@@ -94,11 +60,79 @@
       "-DDEBUG=1",
       "-c",
       "-o",
+      "build/editor/editor.o",
+      "src/editor/editor.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/editor/editor.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/editor/editor.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
       "build/quadtree/quadtree.o",
       "src/quadtree/quadtree.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
     "file": "/home/plunyo/Coding/circuit-creator-4/src/quadtree/quadtree.c",
     "output": "/home/plunyo/Coding/circuit-creator-4/build/quadtree/quadtree.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/camera/camera.o",
+      "src/camera/camera.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/camera/camera.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/camera/camera.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
+      "build/utils/utils.o",
+      "src/utils/utils.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/utils/utils.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/utils/utils.o"
   }
 ]

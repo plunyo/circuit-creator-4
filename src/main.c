@@ -1,48 +1,47 @@
 #include <raylib.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "editor/editor.h"
+#include "world/world.h"
 #include "logic/gate.h"
 
 int main(int argc, char* argv[]) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(1920, 1080, "My Game");
+    InitWindow(1920, 1080, "Gate Madness");
 
+    srand((unsigned int)time(NULL)); // random seed
+
+    World world = CreateWorld();
     Editor editor = CreateEditor();
 
-    AddGate(
-        &editor.world, 
-        CreateGate(NOT_GATE, (Vector2){ 200.0f, 200.0f})
-    );
-
-    AddGate(
-        &editor.world, 
-        CreateGate(AND_GATE, (Vector2){ 250.0f, 500.0f})
-    );
-
-    AddGate(
-        &editor.world, 
-        CreateGate(OR_GATE,  (Vector2){ 700.0f, 200.0f})
-    );
-
-    AddGate(
-        &editor.world, 
-        CreateGate(XOR_GATE, (Vector2){ 950.0f, 200.0f})
-    );
+    // spawn 50 random gates all over the place
+    int numRandomGates = 50;
+    for (int i = 0; i < numRandomGates; i++) {
+        GateType type = rand() % 4; // 0=NOT,1=AND,2=OR,3=XOR,4=NAND
+        Vector2 pos = {
+            (float)(rand() % 5000), // x 0-4000
+            (float)(rand() % 5000)  // y 0-4000
+        };
+        AddGate(&world, CreateGate(type, pos));
+    }
 
     while (!WindowShouldClose()) {
+        float dt = GetFrameTime();
+        UpdateWorld(&world, dt);
         UpdateEditor(&editor);
 
         BeginDrawing();
-            ClearBackground(BLACK);
-            
+            ClearBackground(GRAY);
+
+            DrawWorld(&world);
             DrawEditor(&editor);
 
             DrawText(TextFormat("FPS: %d", GetFPS()), 15, 15, 30, BLACK);
         EndDrawing();
     }
 
-    UnloadWorld(&editor.world);
+    UnloadWorld(&world);
     CloseWindow();
     return 0;
 }

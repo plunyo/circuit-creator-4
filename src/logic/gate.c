@@ -80,7 +80,7 @@ void DrawGate(Gate *gate) {
 
     // main body
     DrawRectanglePro(gateRect, (Vector2){0, 0}, 0.0f, getColorFromGate(gate->type));
-    DrawRectangleLinesEx(gateRect, 5.0f, ColorAlpha(getColorFromGate(gate->type), 0.4f));
+    DrawRectangleLinesEx(gateRect, 5.0f, ColorBrightness(getColorFromGate(gate->type), -0.1f));
 
     // input ports
     DrawCircleV(gate->inputs[0].position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
@@ -96,8 +96,8 @@ void DrawGate(Gate *gate) {
     const char* text = getNameFromGate(gate->type);
     int textWidth = MeasureText(text, GATE_FONT_SIZE);
 
-    float textX = gate->position.x + (GATE_WIDTH  - textWidth) / 2.0f;
-    float textY = gate->position.y + (GATE_HEIGHT - GATE_FONT_SIZE) / 2.0f;
+    float textX = x + (GATE_WIDTH  - textWidth) / 2.0f;
+    float textY = y + (GATE_HEIGHT - GATE_FONT_SIZE) / 2.0f;
 
     DrawText(text, textX, textY, GATE_FONT_SIZE, RAYWHITE);
 

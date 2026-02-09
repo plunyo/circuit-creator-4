@@ -5,12 +5,12 @@
 #include <stddef.h>
 #include <raylib.h>
 
-typedef struct World {
-    RenderTexture viewport;
-    int width;
-    int height;
+#define MAX_ENTITY_QUERY 200
 
-    QuadTree quadtree;
+typedef struct World {
+    Camera2D userCamera;
+
+    QuadTree* quadtree;
 
     Chip* chips;
     size_t chipsSize;
@@ -22,9 +22,9 @@ typedef struct World {
 } World;
 
 World CreateWorld();
-void  UpdateWorld(World* world);
+void  UpdateWorld(World* world, float deltaTime);
 void  DrawWorld(World* world);
 void  UnloadWorld(World* world);
 
 void AddChip(World* world, Chip chip);
-void AddGate(World* world, Gate gate); 
+void AddGate(World* world, Gate gate);

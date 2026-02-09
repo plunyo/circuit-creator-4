@@ -1,25 +1,29 @@
 #include "editor/editor.h"
 #include "settings.h"
-#include "world/world.h"
 #include <raylib.h>
 
 Editor CreateEditor() {
     Editor editor = { 0 };
 
-    editor.world = CreateWorld();
     editor.connManager = MemAlloc(sizeof(ConnMgr));
 
     return editor;
 }
 
 void UpdateEditor(Editor* editor) {
-    UpdateWorld(&editor->world);
 }
 
 void DrawEditor(Editor* editor) {
-    DrawWorld(&editor->world);
-
     // editor bar
     int screenHeight = GetScreenHeight();
-    DrawRectangle(0.0f, screenHeight * WORLD_HEIGHT_MULTIPLIER, GetScreenWidth(), screenHeight * WORLD_HEIGHT_MULTIPLIER, DARKGRAY);
+
+    const Rectangle editorBarRect = (Rectangle){
+        EDITOR_BAR_MARGIN, 
+        screenHeight - EDITOR_BAR_MARGIN - EDITOR_BAR_HEIGHT, 
+        GetScreenWidth() - EDITOR_BAR_MARGIN * 2, 
+        EDITOR_BAR_HEIGHT
+    };
+
+    DrawRectangleRec(editorBarRect, DARKGRAY);
+    DrawRectangleLinesEx(editorBarRect, EDITOR_BAR_OUTLINE, LIGHTGRAY);
 }

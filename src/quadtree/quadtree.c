@@ -1,104 +1,195 @@
 #include "quadtree/quadtree.h"
+#include <raylib.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utils/utils.h"
 
-// check if rect a fully contains rect b
-static int RectangleContainsRect(Rectangle a, Rectangle b) {
-    return b.x >= a.x && b.x + b.width <= a.x + a.width &&
-           b.y >= a.y && b.y + b.height <= a.y + a.height;
-}
+static void Subdivide(QuadTree* qt);
 
-// check if two rectangles overlap
-static int RectangleIntersects(Rectangle a, Rectangle b) {
-    return !(b.x > a.x + a.width || 
-             b.x + b.width < a.x || 
-             b.y > a.y + a.height || 
-             b.y + b.height < a.y);
-}
+QuadTree* CreateQuadTree(Rectangle boundary) {
+    QuadTree* qt = malloc(sizeof(QuadTree));
+    if (!qt) return NULL;
 
-QuadTree CreateQuadTree(Rectangle boundary) {
-    QuadTree qt;
-    qt.boundary = boundary;
-    qt.northeast = qt.northwest = qt.southeast = qt.southwest = NULL;
-    qt.count = 0;
-    memset(qt.entities, 0, sizeof(qt.entities));
+    qt->boundary = boundary;
+    qt->northeast = qt->northwest = qt->southeast = qt->southwest = NULL;
+    qt->count = 0;
+    memset(qt->entities, 0, sizeof(qt->entities));
+
     return qt;
 }
 
-// subdivide a quadtree into 4 children
 static void Subdivide(QuadTree* qt) {
+    if (!qt) return;
+
     float x = qt->boundary.x;
     float y = qt->boundary.y;
-    float w = qt->boundary.width / 2;
-    float h = qt->boundary.height / 2;
+    float w = qt->boundary.width / 2.0f;
+    float h = qt->boundary.height / 2.0f;
 
-    qt->northeast = malloc(sizeof(QuadTree));
-    *qt->northeast = CreateQuadTree((Rectangle){x + w, y, w, h});
+    qt->northwest = CreateQuadTree((Rectangle){ x,     y,     w, h });
+    qt->northeast = CreateQuadTree((Rectangle){ x + w, y,     w, h });
+    qt->southeast = CreateQuadTree((Rectangle){ x + w, y + h, w, h });
+    qt->southwest = CreateQuadTree((Rectangle){ x,     y + h, w, h });
 
-    qt->northwest = malloc(sizeof(QuadTree));
-    *qt->northwest = CreateQuadTree((Rectangle){x, y, w, h});
+    if (!qt->northwest || !qt->northeast || !qt->southeast || !qt->southwest) {
+        DestroyQuadTree(qt->northwest);
+        DestroyQuadTree(qt->northeast);
+        DestroyQuadTree(qt->southeast);
+        DestroyQuadTree(qt->southwest);
 
-    qt->southeast = malloc(sizeof(QuadTree));
-    *qt->southeast = CreateQuadTree((Rectangle){x + w, y + h, w, h});
-
-    qt->southwest = malloc(sizeof(QuadTree));
-    *qt->southwest = CreateQuadTree((Rectangle){x, y + h, w, h});
-}
-
-// insert an entity using its bounds (Rectangle) instead of a single point
-int InsertQuadTree(QuadTree* qt, QTEntity* entity, Rectangle entityBounds) {
-    if (!RectangleIntersects(qt->boundary, entityBounds))
-        return 0; // no overlap with this quad
-
-    // if we have space and no children, store it here
-    if (qt->count < QUADTREE_CAPACITY && !qt->northeast) {
-        qt->entities[qt->count++] = entity;
-        return 1;
+        qt->northwest = qt->northeast = qt->southeast = qt->southwest = NULL;
+        return;
     }
 
-    // subdivide if needed
-    if (!qt->northeast)
+    QTEntity* temp[QUADTREE_CAPACITY];
+    int tempCount = qt->count;
+    for (int i = 0; i < tempCount; ++i) temp[i] = qt->entities[i];
+
+    qt->count = 0;
+    memset(qt->entities, 0, sizeof(qt->entities));
+
+    for (int i = 0; i < tempCount; ++i) {
+        QTEntity* ent = temp[i];
+        if (RectangleContainsRect(qt->northeast->boundary, ent->rect) &&
+            InsertQuadTree(qt->northeast, ent)) continue;
+
+        if (RectangleContainsRect(qt->northwest->boundary, ent->rect) &&
+            InsertQuadTree(qt->northwest, ent)) continue;
+
+        if (RectangleContainsRect(qt->southeast->boundary, ent->rect) &&
+            InsertQuadTree(qt->southeast, ent)) continue;
+
+        if (RectangleContainsRect(qt->southwest->boundary, ent->rect) &&
+            InsertQuadTree(qt->southwest, ent)) continue;
+
+        if (qt->count < QUADTREE_CAPACITY) {
+            qt->entities[qt->count++] = ent;
+        }
+    }
+}
+
+int InsertQuadTree(QuadTree* qt, QTEntity* entity) {
+    if (!CheckCollisionRecs(qt->boundary, entity->rect))
+        return 0;
+
+    if (!qt->northeast && qt->count >= QUADTREE_CAPACITY) {
         Subdivide(qt);
+    }
 
-    // try to insert into a child that fully contains the entity
-    if (RectangleContainsRect(qt->northeast->boundary, entityBounds) &&
-        InsertQuadTree(qt->northeast, entity, entityBounds)) return 1;
+    if (qt->northeast) {
+        if (qt->northeast && RectangleContainsRect(qt->northeast->boundary, entity->rect)) return InsertQuadTree(qt->northeast, entity);
+        if (qt->northwest && RectangleContainsRect(qt->northwest->boundary, entity->rect)) return InsertQuadTree(qt->northwest, entity);
+        if (qt->southeast && RectangleContainsRect(qt->southeast->boundary, entity->rect)) return InsertQuadTree(qt->southeast, entity);
+        if (qt->southwest && RectangleContainsRect(qt->southwest->boundary, entity->rect)) return InsertQuadTree(qt->southwest, entity);
+    }
 
-    if (RectangleContainsRect(qt->northwest->boundary, entityBounds) &&
-        InsertQuadTree(qt->northwest, entity, entityBounds)) return 1;
-
-    if (RectangleContainsRect(qt->southeast->boundary, entityBounds) &&
-        InsertQuadTree(qt->southeast, entity, entityBounds)) return 1;
-
-    if (RectangleContainsRect(qt->southwest->boundary, entityBounds) &&
-        InsertQuadTree(qt->southwest, entity, entityBounds)) return 1;
-
-    // if it doesn't fully fit anywhere, keep it in this node
     if (qt->count < QUADTREE_CAPACITY) {
         qt->entities[qt->count++] = entity;
         return 1;
     }
 
-    // fallback: just insert here even if over capacity (ugly but safe)
     return 0;
 }
 
-// query entities inside a given range
 void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount) {
-    if (!RectangleIntersects(qt->boundary, range))
-        return;
+    if (!qt || !CheckCollisionRecs(qt->boundary, range)) return;
 
     for (int i = 0; i < qt->count; i++) {
-        Rectangle* entRect = (Rectangle*)qt->entities[i]->entity; // assumes entity points to Rectangle
-        if (RectangleIntersects(range, *entRect)) {
+        if (CheckCollisionRecs(range, qt->entities[i]->rect)) {
             found[(*foundCount)++] = qt->entities[i];
         }
     }
 
     if (!qt->northeast) return;
 
-    QueryQuadTree(qt->northeast, range, found, foundCount);
-    QueryQuadTree(qt->northwest, range, found, foundCount);
-    QueryQuadTree(qt->southeast, range, found, foundCount);
-    QueryQuadTree(qt->southwest, range, found, foundCount);
+    if (qt->northeast) QueryQuadTree(qt->northeast, range, found, foundCount);
+    if (qt->northwest) QueryQuadTree(qt->northwest, range, found, foundCount);
+    if (qt->southeast) QueryQuadTree(qt->southeast, range, found, foundCount);
+    if (qt->southwest) QueryQuadTree(qt->southwest, range, found, foundCount);
+}
+
+// expand root one step at a time so the old root always perfectly matches a child quadrant
+void ExpandQuadTreeRoot(QuadTree** root, Rectangle rectOutside) {
+    if (!root || !*root) return;
+
+    while (!RectangleContainsRect((*root)->boundary, rectOutside)) {
+        QuadTree* oldRoot = *root;
+        Rectangle ob = oldRoot->boundary;
+
+        int expandLeft   = rectOutside.x < ob.x;
+        int expandRight  = rectOutside.x + rectOutside.width > ob.x + ob.width;
+        int expandTop    = rectOutside.y < ob.y;
+        int expandBottom = rectOutside.y + rectOutside.height > ob.y + ob.height;
+
+        // new boundary expands exactly by one oldRoot width/height in any direction needed
+        float newX = ob.x - (expandLeft ? ob.width : 0.0f);
+        float newY = ob.y - (expandTop  ? ob.height : 0.0f);
+        float newW = ob.width  * ( (expandLeft || expandRight) ? 2.0f : 1.0f );
+        float newH = ob.height * ( (expandTop  || expandBottom) ? 2.0f : 1.0f );
+
+        Rectangle newBoundary = (Rectangle){ newX, newY, newW, newH };
+        QuadTree* newRoot = CreateQuadTree(newBoundary);
+        if (!newRoot) return;
+
+        // child rectangles are exact halves of the new boundary
+        float halfW = newW * 0.5f;
+        float halfH = newH * 0.5f;
+
+        Rectangle nwRect = (Rectangle){ newX,         newY,         halfW, halfH };
+        Rectangle neRect = (Rectangle){ newX + halfW, newY,         halfW, halfH };
+        Rectangle seRect = (Rectangle){ newX + halfW, newY + halfH, halfW, halfH };
+        Rectangle swRect = (Rectangle){ newX,         newY + halfH, halfW, halfH };
+
+        // place the old root in whichever quadrant its center falls into
+        float oldCenterX = ob.x + ob.width * 0.5f;
+        float oldCenterY = ob.y + ob.height * 0.5f;
+        float midX = newX + halfW;
+        float midY = newY + halfH;
+
+        if (oldCenterX < midX && oldCenterY < midY) {
+            newRoot->northwest = oldRoot;
+            newRoot->northeast = CreateQuadTree(neRect);
+            newRoot->southeast = CreateQuadTree(seRect);
+            newRoot->southwest = CreateQuadTree(swRect);
+        } else if (oldCenterX >= midX && oldCenterY < midY) {
+            newRoot->northeast = oldRoot;
+            newRoot->northwest = CreateQuadTree(nwRect);
+            newRoot->southeast = CreateQuadTree(seRect);
+            newRoot->southwest = CreateQuadTree(swRect);
+        } else if (oldCenterX >= midX && oldCenterY >= midY) {
+            newRoot->southeast = oldRoot;
+            newRoot->northwest = CreateQuadTree(nwRect);
+            newRoot->northeast = CreateQuadTree(neRect);
+            newRoot->southwest = CreateQuadTree(swRect);
+        } else {
+            newRoot->southwest = oldRoot;
+            newRoot->northwest = CreateQuadTree(nwRect);
+            newRoot->northeast = CreateQuadTree(neRect);
+            newRoot->southeast = CreateQuadTree(seRect);
+        }
+
+        *root = newRoot;
+    }
+}
+
+void DrawQuadTree(QuadTree *qt) {
+    if (!qt) return;
+
+    DrawRectangleLinesEx(qt->boundary, 5.0f, ColorAlpha(SKYBLUE, 0.4f));
+
+    DrawQuadTree(qt->northwest);
+    DrawQuadTree(qt->northeast);
+    DrawQuadTree(qt->southwest);
+    DrawQuadTree(qt->southeast);
+}
+
+void DestroyQuadTree(QuadTree* qt) {
+    if (!qt) return;
+
+    DestroyQuadTree(qt->northeast);
+    DestroyQuadTree(qt->northwest);
+    DestroyQuadTree(qt->southeast);
+    DestroyQuadTree(qt->southwest);
+
+    free(qt);
 }
