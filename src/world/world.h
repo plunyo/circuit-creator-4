@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <raylib.h>
 
-#define MAX_ENTITY_QUERY 200
+#define MAX_VISIBLE 512
 
 typedef struct World {
     Camera2D userCamera;

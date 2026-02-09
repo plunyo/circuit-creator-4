@@ -1,4 +1,5 @@
 #include "editor/editor.h"
+#include "editor/conn_mgr.h"
 #include "settings.h"
 #include <raylib.h>
 

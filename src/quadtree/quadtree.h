@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 
-#define QUADTREE_CAPACITY 5
+#define QUADTREE_CAPACITY 3
 
 typedef enum QTEntityType {
     QUADTREE_GATE,

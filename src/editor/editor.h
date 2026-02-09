@@ -1,6 +1,6 @@
 #pragma once
 
-#include "editor/conn_mgr.h"
+typedef struct ConnMgr ConnMgr;
 
 typedef struct Editor {
     ConnMgr* connManager;

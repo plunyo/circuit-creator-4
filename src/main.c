@@ -16,12 +16,12 @@ int main(int argc, char* argv[]) {
     Editor editor = CreateEditor();
 
     // spawn 50 random gates all over the place
-    int numRandomGates = 50;
+    int numRandomGates = 1000;
     for (int i = 0; i < numRandomGates; i++) {
         GateType type = rand() % 4; // 0=NOT,1=AND,2=OR,3=XOR,4=NAND
         Vector2 pos = {
-            (float)(rand() % 5000), // x 0-4000
-            (float)(rand() % 5000)  // y 0-4000
+            (float)(rand() % 10000), // x 0-4000
+            (float)(rand() % 10000)  // y 0-4000
         };
         AddGate(&world, CreateGate(type, pos));
     }

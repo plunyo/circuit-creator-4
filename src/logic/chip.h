@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 #include "logic/gate.h"
-#include "logic/wire.h"
+#include "quadtree/wire.h"
 
 typedef struct Chip {
     Vector2 pos;

@@ -37,14 +37,23 @@ void DrawWorld(World* world) {
             Vector2 p4 = world->gates[1].inputs[0].position;
 
             float dx = fabsf(p4.x - p1.x);
-            float bend = fmaxf(dx * 0.5f, 100.0f);
+            float bend = fmaxf(dx * 0.7f, 100.0f);
             Vector2 c3 = (Vector2){ p4.x - bend, p4.y };
             Vector2 c2 = (Vector2){ p1.x + bend, p1.y };
 
             DrawSplineSegmentBezierCubic(p1, c2, c3, p4, GATE_PORT_RADIUS * 0.8f, DARKGRAY);
         }
         
-        for (int i = 0; i < world->gatesSize; i++) DrawGate(&world->gates[i]);
+
+        //REUSE DONT MALLOC EVERY FRAME
+        QTEntity** found = malloc(sizeof(QTEntity*) * MAX_VISIBLE);
+        int foundCount = 0;
+        QueryQuadTree(world->quadtree, GetUserCameraRect(world->userCamera), found, &foundCount);
+        
+        for (int i = 0; i < foundCount; i++)
+            DrawGate(&world->gates[found[i]->index]);
+        
+        free(found);
 
         DrawQuadTree(world->quadtree);
     EndUserCameraMode();
