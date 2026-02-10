@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[]) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(1920, 1080, "Gate Madness");
+    InitWindow(1920, 1080, "circuit creator 4");
 
     srand((unsigned int)time(NULL)); // random seed
 
@@ -30,6 +30,9 @@ int main(int argc, char* argv[]) {
         float dt = GetFrameTime();
         UpdateWorld(&world, dt);
         UpdateEditor(&editor);
+
+        if (IsKeyPressed(KEY_F11)) MaximizeWindow();
+        
 
         BeginDrawing();
             ClearBackground(GRAY);

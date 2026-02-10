@@ -3,26 +3,30 @@
 #include <raymath.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "camera/camera.h"
 #include "logic/gate.h"
 #include "quadtree/quadtree.h"
 #include "settings.h"
 
 World CreateWorld() {
-    World world = { 0 };
+    World world = {0};
 
     world.userCamera = CreateUserCamera(Vector2Zero());
 
     world.quadtree = CreateQuadTree(GetUserCameraRect(world.userCamera));
 
-    world.visibleEntities = malloc(sizeof(QTEntity*) * MAX_VISIBLE);
     world.visibleCount = 0;
 
-    world.gatesCapacity = 10;
+    world.gatesCapacity = 16;
     world.gatesSize = 0;
     world.gates = malloc(sizeof(Gate) * world.gatesCapacity);
 
-    world.chipsCapacity = 10;
+    // preallocate QTEntity pool
+    world.gateEntities = malloc(sizeof(QTEntity) * 1024); // max gates
+    memset(world.gateEntities, 0, sizeof(QTEntity) * 1024);
+
+    world.chipsCapacity = 16;
     world.chipsSize = 0;
     world.chips = malloc(sizeof(Chip) * world.chipsCapacity);
 
@@ -30,45 +34,46 @@ World CreateWorld() {
 }
 
 void UpdateWorld(World *world, float deltaTime) {
-    UpdateUserCamera(&world->userCamera, GetFrameTime());
+    UpdateUserCamera(&world->userCamera, deltaTime);
+
+    world->visibleCount = 0;
+
+    QueryQuadTree(
+        world->quadtree,
+        GetUserCameraRect(world->userCamera),
+        world->visibleEntities,
+        &world->visibleCount,
+        MAX_VISIBLE // added limit
+    );
 }
 
 void DrawWorld(World* world) {
     BeginUserCameraMode(world->userCamera);
-        if (world->gatesSize >= 2) {
-            Vector2 p1 = world->gates[0].output.position;
-            Vector2 p4 = world->gates[1].inputs[0].position;
 
-            float dx = fabsf(p4.x - p1.x);
-            float bend = fmaxf(dx * 0.7f, 100.0f);
-            Vector2 c3 = (Vector2){ p4.x - bend, p4.y };
-            Vector2 c2 = (Vector2){ p1.x + bend, p1.y };
+    if (world->gatesSize >= 2) {
+        Vector2 p1 = world->gates[0].output.position;
+        Vector2 p4 = world->gates[1].inputs[0].position;
 
-            DrawSplineSegmentBezierCubic(p1, c2, c3, p4, GATE_PORT_RADIUS * 0.8f, DARKGRAY);
-        }
-        
+        float dx = fabsf(p4.x - p1.x);
+        float bend = fmaxf(dx * 0.7f, 100.0f);
+        Vector2 c3 = (Vector2){ p4.x - bend, p4.y };
+        Vector2 c2 = (Vector2){ p1.x + bend, p1.y };
 
-        //REUSE DONT MALLOC EVERY FRAME
-        world->visibleCount = 0;
+        DrawSplineSegmentBezierCubic(p1, c2, c3, p4, GATE_PORT_RADIUS * 0.8f, DARKGRAY);
+    }
 
-        QueryQuadTree(
-            world->quadtree, 
-            GetUserCameraRect(world->userCamera), 
-            world->visibleEntities, 
-            &world->visibleCount
-        );
-        
-        for (int i = 0; i < world->visibleCount || i >= MAX_VISIBLE; i++)
-            DrawGate(&world->gates[world->visibleEntities[i]->index]);
+    for (int i = 0; i < world->visibleCount; i++)
+        DrawGate(&world->gates[world->visibleEntities[i]->index]);
 
-        //DrawQuadTree(world->quadtree);
     EndUserCameraMode();
 }
 
 void UnloadWorld(World *world) {
-    MemFree(world->chips);
-    MemFree(world->gates);
-    MemFree(world->visibleEntities);
+    if (!world) return;
+    DestroyQuadTree(world->quadtree);
+    free(world->gates);
+    free(world->gateEntities);
+    free(world->chips);
 }
 
 void AddChip(World* world, Chip chip) {
@@ -76,9 +81,7 @@ void AddChip(World* world, Chip chip) {
         world->chipsCapacity *= 2;
         world->chips = realloc(world->chips, sizeof(Chip) * world->chipsCapacity);
     }
-
-    world->chips[world->chipsSize] = chip;
-    world->chipsSize++;
+    world->chips[world->chipsSize++] = chip;
 }
 
 void AddGate(World* world, Gate gate) {
@@ -87,20 +90,18 @@ void AddGate(World* world, Gate gate) {
         world->gates = realloc(world->gates, sizeof(Gate) * world->gatesCapacity);
     }
 
-    world->gates[world->gatesSize] = gate;
-    world->gatesSize++;
+    int idx = world->gatesSize;
+    world->gates[idx] = gate;
 
-    Rectangle gateRect = (Rectangle){
-        gate.position.x, gate.position.y,
-        GATE_WIDTH, GATE_HEIGHT
-    };
+    // populate stable QTEntity from pool
+    QTEntity* gateEntity = &world->gateEntities[idx];
+    gateEntity->index = idx;
+    gateEntity->rect = (Rectangle){ gate.position.x, gate.position.y, GATE_WIDTH, GATE_HEIGHT };
+    gateEntity->type = QUADTREE_GATE;
 
-    QTEntity* gateEntity = malloc(sizeof(QTEntity));
-    gateEntity->index    = world->gatesSize - 1;
-    gateEntity->rect     = gateRect;
-    gateEntity->type     = QUADTREE_GATE;
-
-    ExpandQuadTreeRoot(&world->quadtree, gateRect);
+    // expand quadtree if needed
+    ExpandQuadTreeRoot(&world->quadtree, gateEntity->rect);
     InsertQuadTree(world->quadtree, gateEntity);
-}
 
+    world->gatesSize++;
+}

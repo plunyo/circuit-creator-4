@@ -16,6 +16,13 @@ Camera2D CreateUserCamera(Vector2 target) {
 }
 
 void UpdateUserCamera(Camera2D* userCamera, float deltaTime) {
+    if (IsWindowResized()) {
+        userCamera->offset = (Vector2){
+            (float)GetScreenWidth()  / 2,
+            (float)GetScreenHeight() / 2
+        };
+    }
+
     userCamera->zoom = expf(
         logf(userCamera->zoom) + ((float)GetMouseWheelMove() * 0.1f)
     );

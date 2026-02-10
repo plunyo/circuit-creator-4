@@ -30,7 +30,7 @@ typedef struct QuadTree {
 
 QuadTree* CreateQuadTree(Rectangle boundary);
 int InsertQuadTree(QuadTree* qt, QTEntity* entity);
-void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount);
+void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount, int maxCount);
 void ExpandQuadTreeRoot(QuadTree** root, Rectangle rectOutside);
 void DrawQuadTree(QuadTree* qt);
 void DestroyQuadTree(QuadTree* qt);

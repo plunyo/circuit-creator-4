@@ -6,7 +6,7 @@
 #define CAMERA_SPEED 800.0f
 #define SPRINT_MULTIPLIER 1.8f
 
-#define MIN_ZOOM 0.01f
+#define MIN_ZOOM 0.25f
 #define MAX_ZOOM 5.0f
 
 #define ZOOM_LERP_SPEED 8.0f

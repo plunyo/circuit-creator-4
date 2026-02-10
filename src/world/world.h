@@ -5,13 +5,13 @@
 #include <stddef.h>
 #include <raylib.h>
 
-#define MAX_VISIBLE 512
+#define MAX_VISIBLE 1024  // safe upper limit
 
 typedef struct World {
     Camera2D userCamera;
 
     QuadTree* quadtree;
-    QTEntity** visibleEntities;
+    QTEntity* visibleEntities[MAX_VISIBLE]; // static safe array
     int visibleCount;
 
     Chip* chips;
@@ -21,6 +21,8 @@ typedef struct World {
     Gate* gates;
     size_t gatesSize;
     int gatesCapacity;
+
+    QTEntity* gateEntities; // pool for all gates
 } World;
 
 World CreateWorld();

@@ -91,21 +91,22 @@ int InsertQuadTree(QuadTree* qt, QTEntity* entity) {
     return 0;
 }
 
-void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount) {
+void QueryQuadTree(QuadTree* qt, Rectangle range, QTEntity** found, int* foundCount, int maxFound) {
     if (!qt || !CheckCollisionRecs(qt->boundary, range)) return;
 
     for (int i = 0; i < qt->count; i++) {
         if (CheckCollisionRecs(range, qt->entities[i]->rect)) {
+            if (*foundCount >= maxFound) return; // clamp to prevent overflow
             found[(*foundCount)++] = qt->entities[i];
         }
     }
 
     if (!qt->northeast) return;
 
-    if (qt->northeast) QueryQuadTree(qt->northeast, range, found, foundCount);
-    if (qt->northwest) QueryQuadTree(qt->northwest, range, found, foundCount);
-    if (qt->southeast) QueryQuadTree(qt->southeast, range, found, foundCount);
-    if (qt->southwest) QueryQuadTree(qt->southwest, range, found, foundCount);
+    QueryQuadTree(qt->northeast, range, found, foundCount, maxFound);
+    QueryQuadTree(qt->northwest, range, found, foundCount, maxFound);
+    QueryQuadTree(qt->southeast, range, found, foundCount, maxFound);
+    QueryQuadTree(qt->southwest, range, found, foundCount, maxFound);
 }
 
 // expand root one step at a time so the old root always perfectly matches a child quadrant
