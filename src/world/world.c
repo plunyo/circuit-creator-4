@@ -15,6 +15,9 @@ World CreateWorld() {
 
     world.quadtree = CreateQuadTree(GetUserCameraRect(world.userCamera));
 
+    world.visibleEntities = malloc(sizeof(QTEntity*) * MAX_VISIBLE);
+    world.visibleCount = 0;
+
     world.gatesCapacity = 10;
     world.gatesSize = 0;
     world.gates = malloc(sizeof(Gate) * world.gatesCapacity);
@@ -46,22 +49,26 @@ void DrawWorld(World* world) {
         
 
         //REUSE DONT MALLOC EVERY FRAME
-        QTEntity** found = malloc(sizeof(QTEntity*) * MAX_VISIBLE);
-        int foundCount = 0;
-        QueryQuadTree(world->quadtree, GetUserCameraRect(world->userCamera), found, &foundCount);
-        
-        for (int i = 0; i < foundCount; i++)
-            DrawGate(&world->gates[found[i]->index]);
-        
-        free(found);
+        world->visibleCount = 0;
 
-        DrawQuadTree(world->quadtree);
+        QueryQuadTree(
+            world->quadtree, 
+            GetUserCameraRect(world->userCamera), 
+            world->visibleEntities, 
+            &world->visibleCount
+        );
+        
+        for (int i = 0; i < world->visibleCount || i >= MAX_VISIBLE; i++)
+            DrawGate(&world->gates[world->visibleEntities[i]->index]);
+
+        //DrawQuadTree(world->quadtree);
     EndUserCameraMode();
 }
 
 void UnloadWorld(World *world) {
     MemFree(world->chips);
     MemFree(world->gates);
+    MemFree(world->visibleEntities);
 }
 
 void AddChip(World* world, Chip chip) {

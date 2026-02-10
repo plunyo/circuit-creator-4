@@ -11,6 +11,8 @@ typedef struct World {
     Camera2D userCamera;
 
     QuadTree* quadtree;
+    QTEntity** visibleEntities;
+    int visibleCount;
 
     Chip* chips;
     size_t chipsSize;
