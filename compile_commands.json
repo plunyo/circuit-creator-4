@@ -26,6 +26,23 @@
       "-DDEBUG=1",
       "-c",
       "-o",
+      "build/logic/wire.o",
+      "src/logic/wire.c"
+    ],
+    "directory": "/home/plunyo/Coding/circuit-creator-4",
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/logic/wire.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/logic/wire.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-g",
+      "-Wall",
+      "-Werror",
+      "-Isrc",
+      "-DDEBUG=1",
+      "-c",
+      "-o",
       "build/world/world.o",
       "src/world/world.c"
     ],
@@ -111,12 +128,12 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/main.o",
-      "src/main.c"
+      "build/utils/utils.o",
+      "src/utils/utils.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/utils/utils.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/utils/utils.o"
   },
   {
     "arguments": [
@@ -128,11 +145,11 @@
       "-DDEBUG=1",
       "-c",
       "-o",
-      "build/utils/utils.o",
-      "src/utils/utils.c"
+      "build/main.o",
+      "src/main.c"
     ],
     "directory": "/home/plunyo/Coding/circuit-creator-4",
-    "file": "/home/plunyo/Coding/circuit-creator-4/src/utils/utils.c",
-    "output": "/home/plunyo/Coding/circuit-creator-4/build/utils/utils.o"
+    "file": "/home/plunyo/Coding/circuit-creator-4/src/main.c",
+    "output": "/home/plunyo/Coding/circuit-creator-4/build/main.o"
   }
 ]

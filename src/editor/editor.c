@@ -1,20 +1,26 @@
 #include "editor/editor.h"
 #include "editor/conn_mgr.h"
+#include "stdlib.h"
 #include "settings.h"
 #include <raylib.h>
 
 Editor CreateEditor() {
     Editor editor = { 0 };
 
-    editor.connManager = MemAlloc(sizeof(ConnMgr));
+    editor.connMgr = malloc(sizeof(ConnMgr));
+    *editor.connMgr = CreateConnMgr();
 
     return editor;
 }
 
-void UpdateEditor(Editor* editor) {
+void UpdateEditor(Editor* editor, World* world) {
+    UpdateConnMgr(editor->connMgr, world);
 }
 
-void DrawEditor(Editor* editor) {
+void DrawEditor(Editor* editor, World* world) {
+    // wire preview
+    DrawWirePreview(editor->connMgr, world);
+
     // editor bar
     int screenHeight = GetScreenHeight();
 

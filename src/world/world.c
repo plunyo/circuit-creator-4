@@ -2,10 +2,11 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 #include "camera/camera.h"
+#include "editor/conn_mgr.h"
 #include "logic/gate.h"
+#include "logic/wire.h"
 #include "quadtree/quadtree.h"
 #include "settings.h"
 
@@ -47,29 +48,24 @@ void UpdateWorld(World *world, float deltaTime) {
     );
 }
 
-void DrawWorld(World* world) {
+void DrawWorld(World* world, ConnMgr* connMgr) {
     BeginUserCameraMode(world->userCamera);
-
-    if (world->gatesSize >= 2) {
-        Vector2 p1 = world->gates[0].output.position;
-        Vector2 p4 = world->gates[1].inputs[0].position;
-
-        float dx = fabsf(p4.x - p1.x);
-        float bend = fmaxf(dx * 0.7f, 100.0f);
-        Vector2 c3 = (Vector2){ p4.x - bend, p4.y };
-        Vector2 c2 = (Vector2){ p1.x + bend, p1.y };
-
-        DrawSplineSegmentBezierCubic(p1, c2, c3, p4, GATE_PORT_RADIUS * 0.8f, DARKGRAY);
-    }
 
     for (int i = 0; i < world->visibleCount; i++)
         DrawGate(&world->gates[world->visibleEntities[i]->index]);
+
+    for (int i = 0; i < connMgr->wireCount; i++) {
+        DrawWire(&connMgr->wires[i]);
+    }
+
+    DrawQuadTree(world->quadtree);
 
     EndUserCameraMode();
 }
 
 void UnloadWorld(World *world) {
     if (!world) return;
+
     DestroyQuadTree(world->quadtree);
     free(world->gates);
     free(world->gateEntities);

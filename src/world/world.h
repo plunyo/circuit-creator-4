@@ -2,6 +2,7 @@
 
 #include "logic/chip.h"
 #include "quadtree/quadtree.h"
+#include "editor/conn_mgr.h"
 #include <stddef.h>
 #include <raylib.h>
 
@@ -27,7 +28,7 @@ typedef struct World {
 
 World CreateWorld();
 void  UpdateWorld(World* world, float deltaTime);
-void  DrawWorld(World* world);
+void  DrawWorld(World* world, ConnMgr* connMgr);
 void  UnloadWorld(World* world);
 
 void AddChip(World* world, Chip chip);

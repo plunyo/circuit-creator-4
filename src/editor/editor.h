@@ -1,11 +1,13 @@
 #pragma once
 
+#include "world/world.h"
+
 typedef struct ConnMgr ConnMgr;
 
 typedef struct Editor {
-    ConnMgr* connManager;
+    ConnMgr* connMgr;
 } Editor;
 
 Editor CreateEditor();
-void UpdateEditor(Editor* editor);
-void DrawEditor(Editor* editor);
+void UpdateEditor(Editor* editor, World* world);
+void DrawEditor(Editor* editor, World* world);

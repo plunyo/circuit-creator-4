@@ -1,6 +1,7 @@
 #include "gate.h"
 
 #include <raylib.h>
+#include "logic/port.h"
 #include "settings.h"
 
 static char* getNameFromGate(GateType type) {
@@ -29,7 +30,7 @@ Gate CreateGate(GateType type, Vector2 pos) {
     Gate gate = { 0 };
 
     gate.type = type;
-    gate.output = (Port){ 0 };
+    gate.output.type = PORT_OUTPUT;
     
     MoveGate(&gate, pos);   
 
@@ -83,14 +84,14 @@ void DrawGate(Gate *gate) {
     DrawRectangleLinesEx(gateRect, 5.0f, ColorBrightness(getColorFromGate(gate->type), -0.1f));
 
     // input ports
-    DrawCircleV(gate->inputs[0].position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+    DrawCircleV(gate->inputs[0].position, PORT_RADIUS, PORT_COLOR);
     
     if (gate->type != NOT_GATE) {
-        DrawCircleV(gate->inputs[1].position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+        DrawCircleV(gate->inputs[1].position, PORT_RADIUS, PORT_COLOR);
     }
 
     // output port
-    DrawCircleV(gate->output.position, GATE_PORT_RADIUS, GATE_PORT_COLOR);
+    DrawCircleV(gate->output.position, PORT_RADIUS, PORT_COLOR);
 
     // text
     const char* text = getNameFromGate(gate->type);

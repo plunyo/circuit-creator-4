@@ -6,7 +6,6 @@
 
 typedef enum QTEntityType {
     QUADTREE_GATE,
-    QUADTREE_PORT,
     QUADTREE_CHIP,
 } QuadTreeEntityType;
 
